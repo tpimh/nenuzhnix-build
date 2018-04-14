@@ -1,0 +1,10 @@
+base-files
+musl
+kernel-headers
+netbsd-curses
+libedit
+dash
+miniz
+libressl
+toybox
+lynx
