@@ -16,7 +16,7 @@ cd /nenuzhnix
 
 while read PKG; do
   cd /nenuzhnix/$PKG
-  opkg-buildpackage && SUCCESS=$((SUCCESS+1)) || FAIL=$((FAIL+1))
+  opkg-buildpackage > /dev/null && SUCCESS=$((SUCCESS+1)) || FAIL=$((FAIL+1))
   install_opk $PKG
 done < /order.txt
 
