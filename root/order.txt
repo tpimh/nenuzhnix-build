@@ -6,5 +6,6 @@ libedit
 dash
 miniz
 libressl
-toybox
+libssh2
 lynx
+toybox
