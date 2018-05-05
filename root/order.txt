@@ -8,5 +8,6 @@ miniz
 libressl
 libssh2
 curl
+libgit2
 lynx
 toybox
