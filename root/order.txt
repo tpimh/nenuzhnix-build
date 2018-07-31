@@ -8,6 +8,7 @@ miniz
 libressl
 libssh2
 curl
+libarchive
 libgit2
 simplegit
 lynx
