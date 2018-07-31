@@ -9,6 +9,7 @@ libressl
 libssh2
 curl
 libarchive
+dropbear
 libgit2
 simplegit
 lynx
