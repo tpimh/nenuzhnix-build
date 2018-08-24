@@ -12,5 +12,6 @@ libarchive
 dropbear
 libgit2
 simplegit
+e2fsprogs
 lynx
 toybox
