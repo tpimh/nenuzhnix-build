@@ -2,7 +2,7 @@
 
 ROOT='alpine'
 REPO='http://dl-cdn.alpinelinux.org/alpine/edge/main'
-APKVER='2.10.0-r1'
+APKVER='2.10.0-r3'
 
 export LANG='C'
 
