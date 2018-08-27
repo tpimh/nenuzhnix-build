@@ -20,9 +20,11 @@ cd /nenuzhnix
 ./download-src.sh
 
 while read PKG; do
+  echo -e "travis_fold:start:e\033[33;1mbuilding $PKG\033[0m"
   cd /nenuzhnix/$PKG
   opkg-buildpackage > /dev/null && SUCCESS=$((SUCCESS+1)) || FAIL=$((FAIL+1))
   install_opk $PKG
+  echo -e "\ntravis_fold:end:e\r"
 done < /order.txt
 
 echo $SUCCESS packages built, $FAIL packages failed
