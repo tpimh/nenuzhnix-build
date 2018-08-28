@@ -1,7 +1,7 @@
 #!/bin/sh
 
 NENREPO='https://github.com/tpimh/nenuzhnix.git'
-NGTC='http://golovin.in/x86_64-pc-linux-musl.tar.gz'
+NGTC='https://golovin.in/x86_64-pc-linux-musl.tar.gz'
 
 cd /
 echo -e "travis_fold:start:download\033[33;1mcloning nenuzhnix\033[0m"
