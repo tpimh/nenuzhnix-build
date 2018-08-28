@@ -9,6 +9,7 @@ libressl
 libssh2
 curl
 libarchive
+opkg
 dropbear
 libgit2
 simplegit
