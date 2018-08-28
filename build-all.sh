@@ -2,16 +2,19 @@
 
 ROOT='alpine'
 REPO='http://dl-cdn.alpinelinux.org/alpine/edge/main'
-APKVER='2.10.0-r3'
+DM='curl -Sq --progress-bar -O'
 
 export LANG='C'
 
 rm -rf $ROOT
 mkdir -p $ROOT
 echo -e "travis_fold:start:download\033[33;1mdownloading alpine package manager\033[0m"
-wget $REPO/x86_64/apk-tools-static-$APKVER.apk
+$DM $REPO/x86_64/APKINDEX.tar.gz
+tar xf APKINDEX.tar.gz APKINDEX
+APKVER=$(grep -A1 -e 'P:apk-tools-static' APKINDEX | sed -n 's/V:\(.*\)/\1/p')
+$DM $REPO/x86_64/apk-tools-static-$APKVER.apk
 tar xf apk-tools-static-$APKVER.apk -C root sbin/apk.static 2>/dev/null
-rm apk-tools-static-$APKVER.apk
+rm apk-tools-static-$APKVER.apk APKINDEX.tar.gz APKINDEX
 echo -e "\ntravis_fold:end:download\r"
 cp -r root/* $ROOT
 
