@@ -172,13 +172,13 @@ if [ -e ../${pkg_tarball} ] ; then
 fi
 
 # build package
-if ! ${CONTROL}/rules build; then
+if ! ${CONTROL}/rules build >/dev/null; then
 	echo "Build failed"
 	exit 1
 fi
 
 # install it to tmp directory
-if ! ${CONTROL}/rules install; then
+if ! ${CONTROL}/rules install >/dev/null; then
 	echo "Install failed"
 	exit 1
 fi
@@ -215,7 +215,7 @@ opkg-build -o 0 -g 0 -O /tmp/${pkg} || exit 1
 rm -rf /tmp/${pkg}
 
 cd $owd
-if ! ${CONTROL}/rules clean; then
+if ! ${CONTROL}/rules clean >/dev/null; then
 	echo "Clean failed"
 	exit 1
 fi
