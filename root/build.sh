@@ -21,6 +21,7 @@ cd /nenuzhnix
 while read PKG; do
   echo -e "travis_fold:start:build\033[33;1mbuilding $PKG\033[0m"
   cd /nenuzhnix/$PKG
+  find . -not -path './opkg/*' -not -path './opkg' -delete
   opkg-buildpackage && SUCCESS=$((SUCCESS+1)) || FAIL=$((FAIL+1))
   install_opk $PKG
   echo -e "\ntravis_fold:end:build\r"
