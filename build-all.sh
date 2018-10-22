@@ -8,14 +8,12 @@ export LANG='C'
 
 rm -rf $ROOT
 mkdir -p $ROOT
-echo "travis_fold:start:download\033[33;1mdownloading alpine package manager\033[0m"
-$DM $REPO/x86_64/APKINDEX.tar.gz
+$DM $REPO/x86_64/APKINDEX.tar.gz && printf '\r\033[1A\033[K'
 tar xf APKINDEX.tar.gz APKINDEX
 APKVER=$(grep -A1 -e 'P:apk-tools-static' APKINDEX | sed -n 's/V:\(.*\)/\1/p')
-$DM $REPO/x86_64/apk-tools-static-$APKVER.apk
+$DM $REPO/x86_64/apk-tools-static-$APKVER.apk && printf '\r\033[1A\033[K'
 tar xf apk-tools-static-$APKVER.apk -C root sbin/apk.static 2>/dev/null
 rm apk-tools-static-$APKVER.apk APKINDEX.tar.gz APKINDEX
-echo "\ntravis_fold:end:download\r"
 cp -r root/* $ROOT
 
 echo "travis_fold:start:download\033[33;1minstalling base system\033[0m"
