@@ -2,4 +2,7 @@ language: generic
 
 sudo: required
 
+env:
+  - FOLD_START="travis_fold:start:fold" FOLD_END="\ntravis_fold:end:fold\r"
+
 script: ./build-all.sh
