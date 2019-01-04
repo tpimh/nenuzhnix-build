@@ -6,6 +6,12 @@ DM='curl -Sq --progress-bar -O'
 
 export LANG='C'
 
+if [ x$TRAVIS = xtrue ]
+then
+  FOLD_START="travis_fold:start:fold"
+  FOLD_END="\ntravis_fold:end:fold\r"
+fi
+
 rm -rf $ROOT
 mkdir -p $ROOT
 if [ -d $ROOT-repo ]
@@ -42,10 +48,10 @@ then
   REPO='/repo'
 fi
 
-printf "%s\033[33;1m%s\033[0m\n" "$FOLD_START" "installing base system"
+$(which echo) -e "$FOLD_START\033[33;1minstalling base system\033[0m"
 ./proot -S $ROOT /sbin/apk.static --no-progress -X $REPO -U --no-cache --allow-untrusted --initdb add alpine-base
 ./proot -S $ROOT /bin/sh -c "echo $REPO > /etc/apk/repositories"
 ./proot -S $ROOT /sbin/apk --no-progress --no-cache add libstdc++ git curl wget make findutils tar coreutils bash automake autoconf libtool cmake ninja file patch bison libarchive-tools
-printf "%s\n" "$FOLD_END"
+$(which echo) -e "\n$FOLD_END"
 ./proot -S $ROOT /usr/bin/env -i /bin/sh -l /install.sh
 ./proot -S $ROOT /usr/bin/env -i /bin/sh -l /build.sh
