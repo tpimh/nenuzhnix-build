@@ -53,5 +53,10 @@ $(which echo) -e "$FOLD_START\033[33;1minstalling base system\033[0m"
 ./proot -S $ROOT /bin/sh -c "echo $REPO > /etc/apk/repositories"
 ./proot -S $ROOT /sbin/apk --no-progress --no-cache add libstdc++ git curl wget make findutils tar coreutils bash automake autoconf libtool cmake ninja file patch bison libarchive-tools
 $(which echo) -e "\n$FOLD_END"
+if [ x$TRAVIS = xtrue ]
+then
+  echo 'export FOLD_START="travis_fold:start:fold"' >> $ROOT/etc/profile
+  echo 'export FOLD_END="\ntravis_fold:end:fold\r"' >> $ROOT/etc/profile
+fi
 ./proot -S $ROOT /usr/bin/env -i /bin/sh -l /install.sh
 ./proot -S $ROOT /usr/bin/env -i /bin/sh -l /build.sh
