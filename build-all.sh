@@ -8,10 +8,20 @@ export LANG='C'
 
 rm -rf $ROOT
 mkdir -p $ROOT
-$DM $REPO/x86_64/APKINDEX.tar.gz && printf '\r\033[1A\033[K'
+if [ -d $ROOT-repo ]
+then
+  cp $ROOT-repo/x86_64/APKINDEX.tar.gz .
+else
+  $DM $REPO/x86_64/APKINDEX.tar.gz && printf '\r\033[1A\033[K'
+fi
 tar xf APKINDEX.tar.gz APKINDEX
 APKVER=$(grep -A1 -e 'P:apk-tools-static' APKINDEX | sed -n 's/V:\(.*\)/\1/p')
-$DM $REPO/x86_64/apk-tools-static-$APKVER.apk && printf '\r\033[1A\033[K'
+if [ -d $ROOT-repo ]
+then
+  cp $ROOT-repo/x86_64/apk-tools-static-$APKVER.apk .
+else
+  $DM $REPO/x86_64/apk-tools-static-$APKVER.apk && printf '\r\033[1A\033[K'
+fi
 tar xf apk-tools-static-$APKVER.apk -C root sbin/apk.static 2>/dev/null
 rm apk-tools-static-$APKVER.apk APKINDEX.tar.gz APKINDEX
 cp -r root/* $ROOT
@@ -24,6 +34,12 @@ fi
 if [ -d nenuzhnix-source ]
 then
   cp -R nenuzhnix-source $ROOT/nenuzhnix
+fi
+
+if [ -d $ROOT-repo ]
+then
+  cp -R $ROOT-repo $ROOT/repo
+  REPO='/repo'
 fi
 
 printf "%s\033[33;1m%s\033[0m\n" "$FOLD_START" "installing base system"

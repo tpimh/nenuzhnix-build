@@ -1,4 +1,5 @@
 alpine
+alpine-repo
 root/sbin
 nenuzhnix-source
 x86_64-pc-linux-musl.tar.gz
