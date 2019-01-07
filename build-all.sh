@@ -37,9 +37,9 @@ then
   cp x86_64-pc-linux-musl.tar.gz $ROOT
 fi
 
-if [ -d nenuzhnix-source ]
+if [ -d src ]
 then
-  cp -R nenuzhnix-source $ROOT/nenuzhnix
+  cp -R src $ROOT/nenuzhnix
 fi
 
 if [ -d $ROOT-repo ]
