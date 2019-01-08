@@ -58,5 +58,15 @@ then
   echo 'export FOLD_START="travis_fold:start:fold"' >> $ROOT/etc/profile
   echo 'export FOLD_END="\ntravis_fold:end:fold\r"' >> $ROOT/etc/profile
 fi
+echo '
+export PATH=$PATH:/x86_64-pc-linux-musl/bin:/nenuzhnix-tools
+export LD_LIBRARY_PATH=/x86_64-pc-linux-musl/lib
+export PKG_CONFIG_SYSROOT_DIR=/x86_64-pc-linux-musl
+export PKG_CONFIG_LIBDIR=/x86_64-pc-linux-musl/lib/pkgconfig
+
+install_opk() {
+  cd /x86_64-pc-linux-musl
+  ar p /nenuzhnix/$1_*.opk data.tar.gz | tar xfz -
+}' >> $ROOT/etc/profile
 ./proot -S $ROOT /usr/bin/env -i /bin/sh -l /install.sh
 ./proot -S $ROOT /usr/bin/env -i /bin/sh -l /build.sh
