@@ -47,6 +47,20 @@ required_field() {
 	echo $value
 }
 
+process_out() {
+	while read line; do
+		echo "${line}" >> stdout.txt
+		/bin/echo -n "."
+	done < fifoout
+}
+
+process_err() {
+	while read line; do
+		echo "${line}" >> stderr.txt
+		/bin/echo -n "x"
+	done < fifoerr
+}
+
 pkg_appears_sane_control() {
 	local pkg_dir=$1
 
@@ -171,17 +185,35 @@ if [ -e ../${pkg_tarball} ] ; then
 	)
 fi
 
+/bin/echo -n 'build: '
+rm -rf fifoout fifoerr stdout.txt stderr.txt
+mkfifo fifoout
+mkfifo fifoerr
+process_out &
+process_err &
 # build package
-if ! ${CONTROL}/rules build >/dev/null; then
+if ! ${CONTROL}/rules build >fifoout 2>fifoerr; then
 	echo "Build failed"
 	exit 1
 fi
+[ -f stdout.txt ] && mv stdout.txt ${pkg}-build.log
+[ -f stderr.txt ] && mv stderr.txt ${pkg}-build.err
+sleep 0.1 && echo
 
+/bin/echo -n 'install: '
+rm -rf fifoout fifoerr stdout.txt stderr.txt
+mkfifo fifoout
+mkfifo fifoerr
+process_out &
+process_err &
 # install it to tmp directory
-if ! ${CONTROL}/rules install >/dev/null; then
+if ! ${CONTROL}/rules install >fifoout 2>fifoerr; then
 	echo "Install failed"
 	exit 1
 fi
+[ -f stdout.txt ] && mv stdout.txt ${pkg}-install.log
+[ -f stderr.txt ] && mv stderr.txt ${pkg}-install.err
+sleep 0.1 && echo
 
 # copy contents of control directory
 mkdir /tmp/${pkg}/CONTROL
@@ -214,11 +246,20 @@ opkg-build -o 0 -g 0 -O /tmp/${pkg} || exit 1
 
 rm -rf /tmp/${pkg}
 
+/bin/echo -n 'clean: '
 cd $owd
-if ! ${CONTROL}/rules clean >/dev/null; then
+rm -rf fifoout fifoerr stdout.txt stderr.txt
+mkfifo fifoout
+mkfifo fifoerr
+process_out &
+process_err &
+if ! ${CONTROL}/rules clean >fifoout 2>fifoerr; then
 	echo "Clean failed"
 	exit 1
 fi
+[ -f stdout.txt ] && mv stdout.txt ${pkg}-clean.log
+[ -f stderr.txt ] && mv stderr.txt ${pkg}-clean.err
+sleep 0.1 && echo
 
 # Yep. That's it!
 exit 0
