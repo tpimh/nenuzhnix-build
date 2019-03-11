@@ -193,7 +193,7 @@ process_out &
 process_err &
 # build package
 if ! ${CONTROL}/rules build >fifoout 2>fifoerr; then
-	echo "Build failed"
+	sleep 0.1 && echo " failed"
 	exit 1
 fi
 [ -f stdout.txt ] && mv stdout.txt ${pkg}-build.log
@@ -208,7 +208,7 @@ process_out &
 process_err &
 # install it to tmp directory
 if ! ${CONTROL}/rules install >fifoout 2>fifoerr; then
-	echo "Install failed"
+	sleep 0.1 && echo " failed"
 	exit 1
 fi
 [ -f stdout.txt ] && mv stdout.txt ${pkg}-install.log
@@ -254,7 +254,7 @@ mkfifo fifoerr
 process_out &
 process_err &
 if ! ${CONTROL}/rules clean >fifoout 2>fifoerr; then
-	echo "Clean failed"
+	sleep 0.1 && echo " failed"
 	exit 1
 fi
 [ -f stdout.txt ] && mv stdout.txt ${pkg}-clean.log
