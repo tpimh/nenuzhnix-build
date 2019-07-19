@@ -5,6 +5,12 @@ netbsd-curses
 libedit
 dash
 miniz
+xz
+shadow
+kmod
+kbd
+e2fsprogs
+eudev
 libressl
 libssh2
 curl
@@ -13,6 +19,5 @@ opkg
 dropbear
 libgit2
 simplegit
-e2fsprogs
 lynx
 toybox

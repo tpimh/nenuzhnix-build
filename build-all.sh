@@ -51,7 +51,7 @@ fi
 $(which echo) -e "\n$FOLD_START\033[33;1minstalling base system\033[0m"
 ./proot -S $ROOT /sbin/apk.static --no-progress -X $REPO -U --no-cache --allow-untrusted --initdb add alpine-base
 ./proot -S $ROOT /bin/sh -c "echo $REPO > /etc/apk/repositories"
-./proot -S $ROOT /sbin/apk --no-progress --no-cache add libstdc++ git curl wget make findutils tar coreutils bash automake autoconf libtool cmake ninja file patch bison libarchive-tools
+./proot -S $ROOT /sbin/apk --no-progress --no-cache add libstdc++ git curl wget make findutils tar coreutils bash automake autoconf libtool cmake ninja file patch bison libarchive-tools pkgconf gperf gettext-dev
 $(which echo) -e "\n$FOLD_END"
 if [ x$TRAVIS = xtrue ]
 then
