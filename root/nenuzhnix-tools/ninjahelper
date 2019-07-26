@@ -1,0 +1,17 @@
+# source these functions in rules if using ninja
+
+. "$(which pipestatus)"
+
+filter() {
+  local l n
+  while read -r l; do
+    n=${l#\[ninja\]}
+    [ "x$l" != "x$n" ] && printf "%s\n" "$n" || printf "%s\n" "$l" >&2
+  done
+}
+
+ninjaf() {
+  export NINJA_STATUS="[ninja][%f/%t] "
+  runpipe ninja "$@" \| filter
+  exit $pipestatus_1
+}
