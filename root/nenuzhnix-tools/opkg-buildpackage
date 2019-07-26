@@ -28,6 +28,8 @@
 
 set -e
 
+. $(dirname $(readlink -f "$0"))/pipestatus
+
 SCRIPTDIR=/usr/local/bin
 
 SCRIPTNAME=`basename $0`
