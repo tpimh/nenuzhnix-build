@@ -47,18 +47,19 @@ required_field() {
 	echo $value
 }
 
-process_out() {
-	while read line; do
-		echo "${line}" >> stdout.txt
-		/bin/echo -n "."
-	done < fifoout
+process() {
+  while read line; do
+    printf "%s\n" "${line}" >> "$1"
+    printf "$2"
+  done
 }
 
-process_err() {
-	while read line; do
-		echo "${line}" >> stderr.txt
-		/bin/echo -n "x"
-	done < fifoerr
+try_not_to_fail() {
+  printf '%s: ' "$1"
+  rm -rf "$1.failed" ${pkg}-"$1".log ${pkg}-"$1".err
+  { runpipe ${CONTROL}/rules "$1" 2>&3 \| process ${pkg}-"$1".log .; [ $pipestatus_1 -gt 0 ] && touch "$1.failed"; } 3>&1 1>&2 | process ${pkg}-"$1".err x
+  [ -f "$1.failed" ] && printf ' failed\n' && rm "$1.failed" && exit 1
+  echo
 }
 
 pkg_appears_sane_control() {
@@ -185,35 +186,11 @@ if [ -e ../${pkg_tarball} ] ; then
 	)
 fi
 
-/bin/echo -n 'build: '
-rm -rf fifoout fifoerr stdout.txt stderr.txt
-mkfifo fifoout
-mkfifo fifoerr
-process_out &
-process_err &
 # build package
-if ! ${CONTROL}/rules build >fifoout 2>fifoerr; then
-	sleep 0.1 && echo " failed"
-	exit 1
-fi
-[ -f stdout.txt ] && mv stdout.txt ${pkg}-build.log
-[ -f stderr.txt ] && mv stderr.txt ${pkg}-build.err
-sleep 0.1 && echo
+try_not_to_fail build
 
-/bin/echo -n 'install: '
-rm -rf fifoout fifoerr stdout.txt stderr.txt
-mkfifo fifoout
-mkfifo fifoerr
-process_out &
-process_err &
 # install it to tmp directory
-if ! ${CONTROL}/rules install >fifoout 2>fifoerr; then
-	sleep 0.1 && echo " failed"
-	exit 1
-fi
-[ -f stdout.txt ] && mv stdout.txt ${pkg}-install.log
-[ -f stderr.txt ] && mv stderr.txt ${pkg}-install.err
-sleep 0.1 && echo
+try_not_to_fail install
 
 # copy contents of control directory
 mkdir /tmp/${pkg}/CONTROL
@@ -246,20 +223,8 @@ opkg-build -o 0 -g 0 -O /tmp/${pkg} || exit 1
 
 rm -rf /tmp/${pkg}
 
-/bin/echo -n 'clean: '
 cd $owd
-rm -rf fifoout fifoerr stdout.txt stderr.txt
-mkfifo fifoout
-mkfifo fifoerr
-process_out &
-process_err &
-if ! ${CONTROL}/rules clean >fifoout 2>fifoerr; then
-	sleep 0.1 && echo " failed"
-	exit 1
-fi
-[ -f stdout.txt ] && mv stdout.txt ${pkg}-clean.log
-[ -f stderr.txt ] && mv stderr.txt ${pkg}-clean.err
-sleep 0.1 && echo
+try_not_to_fail clean
 
 # Yep. That's it!
 exit 0
