@@ -10,7 +10,6 @@ shadow
 kmod
 kbd
 e2fsprogs
-eudev
 libressl
 libssh2
 curl
