@@ -1,0 +1,4 @@
+#!/bin/sh
+
+cd /x86_64-pc-linux-musl
+ar p /nenuzhnix/$1_*.opk data.tar.gz | tar xfz -
