@@ -1,8 +1,5 @@
 #!/bin/sh
 
-rm /bin/mv
-ln -s /bin/busybox /bin/mv
-
 SUCCESS=0
 FAIL=0
 
