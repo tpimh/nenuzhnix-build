@@ -2,4 +2,9 @@ language: generic
 
 sudo: required
 
-script: sh build-all.sh
+services:
+  - docker
+
+script:
+    - make image
+    - make deploy
