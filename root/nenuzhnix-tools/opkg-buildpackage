@@ -49,6 +49,10 @@ required_field() {
 	echo $value
 }
 
+getsourcefield() {
+  grep -e "^$1: " $CONTROL/source | sed 's/^'$1': \(.*\)$/\1/'
+}
+
 process() {
   while read line; do
     printf "%s\n" "${line}" >> "$1"
@@ -140,8 +144,28 @@ version_up=`echo ${version} | sed "s/\-[0-9]\+//"`
 echo "Upstream Version = $version_up"
 pkg_upname=${pkg}-${version_up}
 echo "Package Name = $pkg_upname"
-pkg_tarball=${pkg_upname}.tar.gz
-echo "Tarball Name = $pkg_tarball"
+
+if [ -e $CONTROL/source ]; then
+	compressor="$(getsourcefield Filename | sed 's/^.*\.//')"
+	[ -z "$compressor" ] && compressor="gz"
+	case $compressor in
+		gz)
+			tarx=z
+			;;
+		bz2)
+			tarx=j
+			;;
+		xz)
+			tarx=J
+			;;
+		*)
+			echo unknown compressor: $compressor
+			exit 1
+			;;
+	esac
+	pkg_tarball=${pkg_upname}.tar.${compressor}
+	echo "Tarball Name = $pkg_tarball"
+fi
 
 if [ ! -x ${CONTROL}/rules ]; then
 	echo "${CONTROL}/rules not found or not executable."
@@ -151,7 +175,7 @@ fi
 #
 # unpack upstream tarball and make diff
 #
-if [ -e ../${pkg_tarball} ] ; then
+if [ -f ../${pkg_tarball} ] ; then
 	(
 	set +e
 
@@ -163,7 +187,7 @@ if [ -e ../${pkg_tarball} ] ; then
 	mkdir ${pkg_upname}.tmp
 	cd ${pkg_upname}.tmp
 	echo "unpacking source tarball ${pkg_tarball}"
-	tar zxf ${pkg_dir_abs}/../${pkg_tarball}
+	tar ${tarx}xf ${pkg_dir_abs}/../${pkg_tarball}
 	dir=`find . -mindepth 1 -maxdepth 1 -name "*" -type d`
 	cnt=`echo $dir | wc -l`
 	if [ ${cnt} != 1 ] ; then
@@ -186,6 +210,11 @@ if [ -e ../${pkg_tarball} ] ; then
 	rm -rf ${pkg_upname}.tmp
 	rm -rf ${pkg_upname}.orig
 	)
+else
+	if [ ! -z "${pkg_tarball}" ]; then
+		echo source tarball not found: $pkg_tarball
+		exit 1
+	fi
 fi
 
 # build package
