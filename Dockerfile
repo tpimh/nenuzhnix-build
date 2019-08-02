@@ -5,6 +5,7 @@ RUN apk add --no-cache -t .builddeps \
 	automake \
 	bash \
 	bison \
+	bzip2 \
 	cmake \
 	coreutils \
 	curl \
@@ -22,7 +23,8 @@ RUN apk add --no-cache -t .builddeps \
 	patch \
 	pkgconf \
 	tar \
-	wget
+	wget \
+	xz
 
 RUN curl --progress-bar -O https://golovin.in/x86_64-pc-linux-musl.tar.gz && \
 	tar xvf x86_64-pc-linux-musl.tar.gz && rm x86_64-pc-linux-musl.tar.gz
