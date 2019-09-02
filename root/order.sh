@@ -4,6 +4,8 @@ ORDERED="base-files musl kernel-headers"
 
 PACKAGES=$(find . -maxdepth 2 -mindepth 2 -name 'opkg' -type d | sed 's/\.\/\(.*\)\/opkg/\1/')
 
+echo -n " $ORDERED"
+
 getfield() {
   grep -e "^$2: " $1/opkg/control | sed 's/^'$2': \(.*\)$/\1/'
 }
@@ -49,6 +51,7 @@ n() {
 }
 
 add() {
+  echo -n " $1"
   ORDERED="$ORDERED $1"
 }
 
@@ -63,4 +66,4 @@ while [ "$(n $ORDERED)" -ne "$(n $PACKAGES)" ]; do
   done
 done
 
-echo $ORDERED
+echo $ORDERED | tr ' ' '\n' > /order.txt
