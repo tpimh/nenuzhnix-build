@@ -26,7 +26,7 @@ RUN apk add --no-cache -t .builddeps \
 	wget \
 	xz
 
-RUN curl --progress-bar -O https://golovin.in/x86_64-pc-linux-musl.tar.gz && \
-	tar xvf x86_64-pc-linux-musl.tar.gz && rm x86_64-pc-linux-musl.tar.gz
+RUN curl --progress-bar -O https://golovin.in/ngtc-x86_64-11.0.0.tar.gz && \
+	tar xvf ngtc-x86_64-11.0.0.tar.gz && rm ngtc-x86_64-11.0.0.tar.gz
 
 COPY ./root /
