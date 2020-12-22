@@ -14,6 +14,7 @@ RUN apk add --no-cache -t .builddeps \
 	gettext-dev \
 	git \
 	gperf \
+	groff \
 	libarchive-tools \
 	libexecinfo \
 	libstdc++ \
@@ -23,6 +24,7 @@ RUN apk add --no-cache -t .builddeps \
 	patch \
 	pkgconf \
 	tar \
+	util-linux \
 	wget \
 	xz
 
