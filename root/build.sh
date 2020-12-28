@@ -10,7 +10,9 @@ while read PKG; do
   cd /nenuzhnix/$PKG
   find . -not -path './opkg/*' -not -path './opkg' -delete
   opkg-buildpackage && SUCCESS=$((SUCCESS+1)) || FAIL=$((FAIL+1))
+  echo
   install_opk $PKG
+  inspect_opk $PKG
   echo -e "\n$FOLD_END"
 done < /order.txt
 

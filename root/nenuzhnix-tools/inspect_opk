@@ -1,0 +1,28 @@
+#!/bin/sh
+
+PKG="/nenuzhnix/$1_*.opk"
+
+CONTENTS="`ar p $PKG data.tar.gz | tar tfz - | sed -e '1d' -e 's/^\.//g' | tr '\n' '|'`"
+
+DIRECTORIES="`echo $CONTENTS | tr '|' '\n' | grep '/$' | sed 's/\/$//g' | tr '\n' '|'`"
+FILES="`echo $CONTENTS | tr '|' '\n' | grep -v '/$' | tr '\n' '|'`"
+
+describe_file() {
+  if [ ! -z "$1" ]; then
+    /bin/echo -n "$1: "
+    ar p $PKG data.tar.gz | tar xOfz - ".$1" | file - | sed 's/\/dev\/stdin: //g'
+  fi
+}
+count_files() {
+  if [ ! -z "$1" ]; then
+    /bin/echo -n "$1: "
+    echo $FILES | tr '|' '\n' | grep "^$1" | sed 's|^'"$1"'/||g' | grep -v '/' | wc -l | sed -e 's/^\s*//g' -e 's/$/ files/g' -e 's/^1 files$/1 file/g'
+  fi
+}
+
+echo inspecting `basename $PKG`
+echo directories:
+echo $DIRECTORIES | tr '|' '\n' | while read dir ; do count_files "$dir" ; done
+echo
+echo files:
+echo $FILES | tr '|' '\n' | while read file ; do describe_file "$file" ; done
