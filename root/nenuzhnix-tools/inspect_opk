@@ -3,14 +3,19 @@
 PKG="/nenuzhnix/$1_*.opk"
 
 CONTENTS="`ar p $PKG data.tar.gz | tar tfz - | sed -e '1d' -e 's/^\.//g' | tr '\n' '|'`"
+VERBOSE="`ar p $PKG data.tar.gz | tar tvfz - | sed -e '1d' | tr '\n' '|'`"
 
 DIRECTORIES="`echo $CONTENTS | tr '|' '\n' | grep '/$' | sed 's/\/$//g' | tr '\n' '|'`"
 FILES="`echo $CONTENTS | tr '|' '\n' | grep -v '/$' | tr '\n' '|'`"
+SYMLINKS="`echo $VERBOSE | tr '|' '\n' | sed -e 's/^l.*\.\//\//g;t;d'` | tr '\n' '|'"
 
 describe_file() {
   if [ ! -z "$1" ]; then
-    /bin/echo -n "$1: "
-    ar p $PKG data.tar.gz | tar xOfz - ".$1" | file - | sed 's/\/dev\/stdin: //g'
+    echo $SYMLINKS | tr '|' '\n' | grep "^$1 -> "
+    if [ "$?" -ne "0" ]; then
+      /bin/echo -n "$1: "
+      ar p $PKG data.tar.gz | tar xOfz - ".$1" | file - | sed 's/\/dev\/stdin: //g'
+    fi
   fi
 }
 count_files() {
