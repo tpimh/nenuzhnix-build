@@ -158,6 +158,9 @@ if [ -e $CONTROL/source ]; then
 		xz)
 			tarx=J
 			;;
+                lz)
+			tarx='--lzip -'
+			;;
 		*)
 			echo unknown compressor: $compressor
 			exit 1
