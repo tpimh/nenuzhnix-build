@@ -42,7 +42,7 @@ do
     if [ -z "$FILENAME" ]
     then
       EXT=gz
-      FILENAME="${PKG}-${BASEVER}.tar.${EXT}"
+      FILENAME="${PKG}-${VER}.tar.${EXT}"
       RENAME="$FILENAME"
     else
       EXT=$(echo $FILENAME | sed 's/^.*\.//')
