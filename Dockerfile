@@ -19,6 +19,7 @@ RUN apk add --no-cache -t .builddeps \
 	libexecinfo \
 	libstdc++ \
 	libtool \
+	lzip \
 	make \
 	ninja \
 	patch \
