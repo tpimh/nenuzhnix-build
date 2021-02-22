@@ -11,7 +11,7 @@ SYMLINKS="`echo $VERBOSE | tr '|' '\n' | sed -e 's/^l.*\.\//\//g;t;d'` | tr '\n'
 
 describe_file() {
   if [ ! -z "$1" ]; then
-    echo $SYMLINKS | tr '|' '\n' | grep "^$1 -> "
+    echo "$SYMLINKS" | tr '|' '\n' | grep "^$1 -> "
     if [ "$?" -ne "0" ]; then
       /bin/echo -n "$1: "
       ar p $PKG data.tar.gz | tar xOfz - ".$1" | file - | sed 's/\/dev\/stdin: //g'
