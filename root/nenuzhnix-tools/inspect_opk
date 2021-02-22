@@ -14,7 +14,13 @@ describe_file() {
     echo "$SYMLINKS" | tr '|' '\n' | grep "^$1 -> "
     if [ "$?" -ne "0" ]; then
       /bin/echo -n "$1: "
-      ar p $PKG data.tar.gz | tar xOfz - ".$1" | file - | sed 's/\/dev\/stdin: //g'
+      FILE="$(ar p $PKG data.tar.gz | tar xOfz - ".$1" | file - | sed 's/\/dev\/stdin: //g')"
+      echo "$FILE" | grep -e "^ELF "
+      if [ "$?" = 0 ]; then
+        ar p $PKG data.tar.gz | tar xOfz - ".$1" | objdump -x - | grep 'NEEDED\|file format\|RPATH' | sed -e 's/\s*NEEDED\s*/\t|- /g' -e 's/<stdin>://g'
+      else
+        echo "$FILE"
+      fi
     fi
   fi
 }
